@@ -1,0 +1,35 @@
+extends layout
+
+block content
+  .container.mt-5
+    h1.text-center.mb-4 Our Interior Design Projects
+    p.text-secondary.text-center.mb-4 Explore our portfolio of beautiful, functional spaces
+
+    //- Search bar and category filter
+    form(action='/projects', method='GET', class='form-inline justify-content-center mb-4')
+      input.form-control.mr-2(type='text', name='search', placeholder='Search projects...')
+      select.form-control.mr-2(name='category')
+        option(value='') All Categories
+        option(value='Living Room') Living Room
+        option(value='Bedroom') Bedroom
+        option(value='Kitchen') Kitchen
+        option(value='Office') Office
+      button.btn.btn-primary(type='submit') Search
+
+    //- Project List
+    if projects.length
+      .row
+        each project in projects
+          .col-md-4.mb-4
+            .card.h-100.shadow-sm
+              .card-body
+                h5.card-title.text-primary= project.title
+                h6.card-subtitle.mb-2.text-muted= project.category
+                p.card-text= project.description
+                a.btn.btn-outline-info(href=`/projects/${project._id}`) View Details
+    else
+      .alert.alert-warning.text-center
+        | No projects found.
+        br
+        a.btn.btn-secondary.mt-2(href='/projects') View All Projects
+

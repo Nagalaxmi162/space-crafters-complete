@@ -1,0 +1,87 @@
+extends layout
+
+block content
+  .container.py-5
+    // Page Header
+    .row
+      .col-12
+        h1 Our Interior Design Projects
+        p.lead Explore our portfolio of beautiful, functional spaces
+
+    // Search and Filter
+    .row.mb-4
+      .col-md-8
+        form(method='get', action='/projects')
+          .input-group
+            input.form-control(type='text', name='search', placeholder='Search projects...', value=searchQuery)
+            button.btn.btn-primary(type='submit') Search
+      .col-md-4
+        form(method='get', action='/projects')
+          input(type='hidden', name='search', value=searchQuery)
+          select.form-select(name='category', onchange='this.form.submit()')
+            each category in categories
+              option(value=category, selected=category === currentCategory)= category
+
+    // Projects Grid
+    if projects && projects.length > 0
+      .row
+        each project in projects
+          .col-lg-4.col-md-6.mb-4
+            .card.h-100.shadow-sm.project-card
+              if project.images && project.images.length > 0
+                img.card-img-top(src=`/images/${project.images[0].filename}`, alt=project.title, style='height: 250px; object-fit: cover;')
+              else
+                .bg-light.d-flex.align-items-center.justify-content-center(style='height: 250px;')
+                  i.bi.bi-image.fs-1.text-muted
+              
+              .card-body
+                h5.card-title= project.title
+                p.card-text= project.description.substring(0, 120) + (project.description.length > 120 ? '...' : '')
+                
+                .d-flex.justify-content-between.align-items-center.mb-2
+                  small.text-muted
+                    i.bi.bi-geo-alt.me-1
+                    = project.location
+                  small.text-muted= project.year
+                
+                .d-flex.justify-content-between.align-items-center
+                  span.badge.bg-secondary= project.category
+                  small.text-muted
+                    i.bi.bi-eye.me-1
+                    = project.views + ' views'
+              
+              .card-footer.bg-transparent
+                a.btn.btn-primary.w-100(href=`/projects/${project._id}`) View Details
+
+      // Pagination
+      if totalPages > 1
+        .row.mt-5
+          .col-12
+            nav(aria-label='Projects pagination')
+              ul.pagination.justify-content-center
+                if currentPage > 1
+                  li.page-item
+                    a.page-link(href=`/projects?page=${currentPage - 1}&category=${currentCategory}&search=${searchQuery}`) Previous
+                
+                each page in Array.from({length: totalPages}, (_, i) => i + 1)
+                  li.page-item(class=page === currentPage ? 'active' : '')
+                    a.page-link(href=`/projects?page=${page}&category=${currentCategory}&search=${searchQuery}`)= page
+                
+                if currentPage < totalPages
+                  li.page-item
+                    a.page-link(href=`/projects?page=${currentPage + 1}&category=${currentCategory}&search=${searchQuery}`) Next
+
+    else
+      .row
+        .col-12.text-center.py-5
+          h3 No projects found
+          p Try adjusting your search or filter criteria
+          a.btn.btn-primary(href='/projects') View All Projects
+
+  style.
+    .project-card {
+      transition: transform 0.3s ease;
+    }
+    .project-card:hover {
+      transform: translateY(-5px);
+    }

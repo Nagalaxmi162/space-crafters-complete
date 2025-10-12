@@ -1,0 +1,143 @@
+extends layout
+
+block content 
+
+  // Hero Section
+  section.hero-section.bg-primary.text-white.py-5
+    .container
+      .row.align-items-center
+        .col-lg-6
+          h1.display-4.fw-bold Transform Your Space
+          p.lead Create beautiful, functional interiors that reflect your style and enhance your lifestyle.
+          .mt-4
+            a.btn.btn-light.btn-lg.me-3(href='/projects') View Projects
+            a.btn.btn-outline-light.btn-lg(href='/contact') Get Quote
+        .col-lg-6
+          img.img-fluid.rounded(src='/images/hero-interior.jpg', alt='Beautiful Interior Design')
+
+  // Featured Projects Section
+  if featuredProjects && featuredProjects.length > 0
+    section.py-5
+      .container
+        h2.text-center.mb-5 Featured Projects
+        .row
+          each project in featuredProjects
+            .col-md-4.mb-4
+              .card.h-100.shadow-sm
+                if project.images && project.images.length > 0
+                  img.card-img-top(src=`/images/${project.images[0].filename}`, alt=project.title, style='height: 250px; object-fit: cover;')
+                .card-body
+                  h5.card-title= project.title
+                  p.card-text= project.description.substring(0, 100) + '...'
+                  p.small.text-muted
+                    i.bi.bi-geo-alt #{project.location} • #{project.year}
+                .card-footer.bg-transparent
+                  a.btn.btn-primary(href=`/projects/${project._id}`) View Details
+   
+  .section-furniture-tips.mt-5.mb-5
+  h2.text-primary.mb-3 Furniture Maintenance Tips
+  p.text-secondary Here are expert tips to help you keep your furniture beautiful and durable:
+  ul.list-group.list-group-flush
+    li.list-group-item
+      strong Dust Regularly:
+      |  Use a soft, dry cloth to remove dust and protect finishes.
+    li.list-group-item
+      strong Clean Spills Promptly:
+      |  Wipe up spills quickly and use mild soap if needed.
+    li.list-group-item
+      strong Polish Wooden Furniture:
+      |  Apply furniture polish for shine and moisture protection.
+    li.list-group-item
+      strong Avoid Sunlight:
+      |  Keep furniture out of direct sun to prevent fading.
+    li.list-group-item
+      strong Flip Cushions:
+      |  Rotate cushions to ensure even wear.
+    li.list-group-item
+      strong Use Coasters/Mats:
+      |  Protect surfaces from stains and heat damage.
+    li.list-group-item
+      strong Tighten Screws/Joints:
+      |  Check and tighten hardware regularly to maintain stability.
+  p.mt-3.text-info Good care keeps furniture beautiful and extends its life!
+     
+  // Services Section
+  section.py-5.bg-light
+    .container
+      h2.text-center.mb-5 Our Services
+      .row.text-center
+        .col-md-3.mb-4
+          .card.border-0.bg-transparent
+            .card-body
+              i.bi.bi-house.fs-1.text-primary.mb-3
+              h5 Residential Design
+              p Complete home interior design solutions
+        .col-md-3.mb-4
+          .card.border-0.bg-transparent
+            .card-body
+              i.bi.bi-building.fs-1.text-primary.mb-3
+              h5 Commercial Design
+              p Professional workspace design services
+        .col-md-3.mb-4
+          .card.border-0.bg-transparent
+            .card-body
+              i.bi.bi-chat-dots.fs-1.text-primary.mb-3
+              h5 Consultation
+              p Expert advice and design consultation
+        .col-md-3.mb-4
+          .card.border-0.bg-transparent
+            .card-body
+              i.bi.bi-tools.fs-1.text-primary.mb-3
+              h5 Furniture Care
+              p Maintenance and restoration services
+
+  // Latest Projects Section
+  if latestProjects && latestProjects.length > 0
+    section.py-5
+      .container
+        .d-flex.justify-content-between.align-items-center.mb-5
+          h2 Latest Projects
+          a.btn.btn-outline-primary(href='/projects') View All Projects
+        .row
+          each project in latestProjects.slice(0, 4)
+            .col-md-3.col-sm-6.mb-4
+              .card.h-100.shadow-sm
+                if project.images && project.images.length > 0
+                  img.card-img-top(src=`/images/${project.images[0].filename}`, alt=project.title, style='height: 200px; object-fit: cover;')
+                .card-body
+                  h6.card-title= project.title
+                  p.small.text-muted= project.category
+                  .d-flex.justify-content-between
+                    small.text-muted= project.location
+                    span.badge.bg-primary= project.views + ' views'
+
+  // Reviews Section
+  if featuredReviews && featuredReviews.length > 0
+    section.py-5.bg-light
+      .container
+        .d-flex.justify-content-between.align-items-center.mb-5
+          h2 What Our Clients Say
+          a.btn.btn-outline-primary(href='/reviews') View All Reviews
+        .row
+          each review in featuredReviews
+            .col-md-6.mb-4
+              .card.h-100.border-0.shadow-sm
+                .card-body
+                  .d-flex.mb-2
+                    each star in [1,2,3,4,5]
+                      if star <= review.rating
+                        i.bi.bi-star-fill.text-warning
+                      else
+                        i.bi.bi-star.text-muted
+                  p.card-text= review.reviewText
+                  footer.blockquote-footer
+                    cite= review.name + ' • ' + review.projectType
+
+  // Call to Action Section
+  section.py-5.bg-primary.text-white
+    .container.text-center
+      h2 Ready to Transform Your Space?
+      p.lead Let's create something beautiful together
+      .mt-4
+        a.btn.btn-light.btn-lg.me-3(href='/contact') Get Started
+        a.btn.btn-outline-light.btn-lg(href='/reviews/new') Leave Review
