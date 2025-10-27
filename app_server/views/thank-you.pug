@@ -1,0 +1,31 @@
+extends layout
+
+block content
+  .container
+    .row.justify-content-center.align-items-center(style='min-height: 70vh;')
+      .col-md-6.text-center
+        .thank-you-card
+          i.bi.bi-check-circle-fill.text-success.mb-4(style='font-size: 5rem;')
+          h1.display-4.mb-3 Thank You!
+          p.lead.mb-4= message || 'Your submission has been received successfully.'
+          p.text-muted We will get back to you as soon as possible.
+          .mt-5
+            a.btn.btn-primary.btn-lg.me-3(href='/') Back to Home
+            if returnUrl
+              a.btn.btn-outline-primary.btn-lg(href=returnUrl)= returnText || 'Continue'
+
+  style.
+    .thank-you-card {
+      padding: 40px;
+      animation: fadeInUp 0.6s ease-out;
+    }
+    @keyframes fadeInUp {
+      from {
+        opacity: 0;
+        transform: translateY(30px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }

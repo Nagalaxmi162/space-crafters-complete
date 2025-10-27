@@ -1,7 +1,8 @@
 const mongoose = require('mongoose');
+require('../models/locations');
 const Project = mongoose.model('Project');
 const Review = mongoose.model('Review');
-
+const Contact = mongoose.model('Contact');
 // Homepage
 const homePage = async (req, res) => {
   try {
@@ -44,23 +45,54 @@ const aboutPage = (req, res) => {
   });
 };
 
-// Contact page
-const contactPage = (req, res) => {
-  res.render('contact', {
-    title: 'Contact Us'
-  });
+
+// Get the Contact model
+// Show contact form
+const contactGet = (req, res) => {
+  res.render('contact');
 };
 
 // Handle contact form submission
-const contactSubmit = (req, res) => {
-  // Handle contact form logic here
-  req.session.message = 'Thank you for your message. We will get back to you soon!';
-  res.redirect('/contact');
+const contactPost = async (req, res) => {
+  try {
+    console.log('Contact form data received:', req.body);
+    const { name, email, phone, subject, message } = req.body;
+    // Validate required fields
+    if (!name || !email || !message) {
+      return res.status(400).send('Please fill in all required fields');
+    }
+
+    // Create new contact submission
+    const newContact = new Contact({
+      name,
+      email,
+      phone,
+      subject,
+      message
+    });
+
+    await newContact.save();
+
+    // Redirect to thank you page
+    res.render('thank-you', {
+      message: 'Thank you for contacting us!',
+      returnUrl: '/contact',
+      returnText: 'Send Another Message'
+    });
+
+  } catch (err) {
+    console.error('Error saving contact:', err);
+    res.status(500).send('Error submitting form. Please try again.');
+  }
+};
+const maintenanceTips = (req, res) => {
+  res.render('maintenance-tips');
 };
 
 module.exports = {
   homePage,
   aboutPage,
-  contactPage,
-  contactSubmit
+  contactGet,
+  contactPost,
+  maintenanceTips
 };

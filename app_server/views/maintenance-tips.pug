@@ -1,0 +1,176 @@
+extends layout
+
+block content
+  // Furniture Maintenance Tips Section with Categories
+  .container.py-5
+    .text-center.mb-5
+      h1.display-5.fw-bold.text-primary Furniture Maintenance Tips
+      p.lead.text-secondary Expert care guides for every room in your home
+
+    // Category Cards
+    .row.g-4.mb-5
+      .col-md-4
+        .card.category-card.shadow-sm(data-category="living-room")
+          .card-body.text-center.p-4
+            i.bi.bi-house-door.fs-1.text-primary.mb-3
+            h4.card-title Living Room
+            p.card-text Sofas, coffee tables, entertainment units
+            button.btn.btn-primary.view-tips(onclick='showTips("living-room")') View Tips
+      
+      .col-md-4
+        .card.category-card.shadow-sm(data-category="bedroom")
+          .card-body.text-center.p-4
+            i.bi.bi-moon-stars.fs-1.text-primary.mb-3
+            h4.card-title Bedroom
+            p.card-text Beds, dressers, nightstands
+            button.btn.btn-primary.view-tips(onclick='showTips("bedroom")') View Tips
+      
+      .col-md-4
+        .card.category-card.shadow-sm(data-category="kitchen")
+          .card-body.text-center.p-4
+            i.bi.bi-cup-hot.fs-1.text-primary.mb-3
+            h4.card-title Kitchen & Dining
+            p.card-text Tables, chairs, cabinets
+            button.btn.btn-primary.view-tips(onclick='showTips("kitchen")') View Tips
+
+    // Tips Detail Section (Hidden by default)
+    #tips-section.mt-5(style='display: none;')
+      .card.shadow-lg.border-0
+        .card-header.bg-primary.text-white.d-flex.justify-content-between.align-items-center
+          h3#tips-title.mb-0
+          button.btn.btn-light.btn-sm(onclick='closeTips()') Close ×
+        .card-body.p-4
+          #tips-content
+
+  style.
+    .category-card {
+      border: 2px solid #e0e0e0;
+      border-radius: 15px;
+      transition: all 0.3s ease;
+      cursor: pointer;
+      height: 100%;
+    }
+    .category-card:hover {
+      transform: translateY(-10px);
+      box-shadow: 0 10px 30px rgba(0, 123, 255, 0.2);
+      border-color: #007bff;
+    }
+    .category-card .card-body {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+    }
+    .view-tips {
+      margin-top: auto;
+    }
+    #tips-section {
+      animation: fadeIn 0.5s ease-in;
+    }
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(-20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    .tip-item {
+      padding: 15px;
+      margin-bottom: 15px;
+      border-left: 4px solid #007bff;
+      background-color: #f8f9fa;
+      border-radius: 5px;
+    }
+    .tip-item h5 {
+      color: #007bff;
+      margin-bottom: 10px;
+    }
+
+  script.
+    const tipsData = {
+      'living-room': {
+        title: 'Living Room Furniture Care',
+        tips: [
+          {
+            title: 'Sofa & Upholstery Care',
+            content: 'Vacuum regularly with upholstery attachment. Rotate cushions monthly for even wear. Treat spills immediately with a clean, damp cloth. Professional cleaning every 12-18 months recommended.'
+          },
+          {
+            title: 'Coffee Table Maintenance',
+            content: 'Use coasters for all beverages. Wipe with microfiber cloth weekly. Apply wood polish every 2-3 months. Avoid placing hot items directly on surface.'
+          },
+          {
+            title: 'Entertainment Unit Care',
+            content: 'Dust electronics weekly to prevent overheating. Check cable organization monthly. Clean glass doors with glass cleaner. Ensure proper ventilation around devices.'
+          },
+          {
+            title: 'General Living Room Tips',
+            content: 'Keep furniture away from direct sunlight. Maintain 40-60% humidity to prevent cracking. Rearrange furniture occasionally to distribute wear. Use furniture pads under heavy items.'
+          }
+        ]
+      },
+      'bedroom': {
+        title: 'Bedroom Furniture Care',
+        tips: [
+          {
+            title: 'Bed Frame & Headboard',
+            content: 'Tighten screws and bolts every 3 months. Vacuum underneath bed monthly. Wipe frame with damp cloth weekly. Check for squeaks and apply lubricant if needed.'
+          },
+          {
+            title: 'Mattress Care',
+            content: 'Rotate mattress every 3 months. Use mattress protector to prevent stains. Vacuum mattress surface monthly. Air out mattress by removing bedding for a few hours weekly.'
+          },
+          {
+            title: 'Dresser & Wardrobe',
+            content: 'Empty drawers and vacuum inside every 6 months. Polish wood surfaces quarterly. Check drawer slides and tighten hardware. Use drawer liners to protect contents.'
+          },
+          {
+            title: 'Nightstand Maintenance',
+            content: 'Wipe surface daily if used for beverages. Polish wood monthly. Clean lamp base and check electrical connections. Organize drawers regularly to prevent overfilling.'
+          }
+        ]
+      },
+      'kitchen': {
+        title: 'Kitchen & Dining Furniture Care',
+        tips: [
+          {
+            title: 'Dining Table Care',
+            content: 'Use placemats and tablecloths for protection. Clean spills immediately. Polish wood tables monthly. Use trivets for hot dishes. Tighten table legs quarterly.'
+          },
+          {
+            title: 'Dining Chairs',
+            content: 'Check and tighten chair joints every 3 months. Clean fabric seats with upholstery cleaner. Wipe wooden or metal frames weekly. Replace worn cushions as needed.'
+          },
+          {
+            title: 'Kitchen Cabinet Care',
+            content: 'Wipe cabinet doors with mild soap solution weekly. Check and adjust hinges every 6 months. Clean inside cabinets quarterly. Touch up paint or finish as needed.'
+          },
+          {
+            title: 'Bar Stools & Counter Chairs',
+            content: 'Clean seat surfaces after each use in high-traffic areas. Lubricate swivel mechanisms annually. Check footrest stability monthly. Tighten all fasteners regularly.'
+          }
+        ]
+      }
+    };
+
+    function showTips(category) {
+      const data = tipsData[category];
+      document.getElementById('tips-title').textContent = data.title;
+      
+      let tipsHTML = '';
+      data.tips.forEach(tip => {
+        tipsHTML += `
+          <div class="tip-item">
+            <h5><i class="bi bi-check-circle-fill me-2"></i>${tip.title}</h5>
+            <p class="mb-0">${tip.content}</p>
+          </div>
+        `;
+      });
+      
+      document.getElementById('tips-content').innerHTML = tipsHTML;
+      document.getElementById('tips-section').style.display = 'block';
+      
+      // Smooth scroll to tips section
+      document.getElementById('tips-section').scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+
+    function closeTips() {
+      document.getElementById('tips-section').style.display = 'none';
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }

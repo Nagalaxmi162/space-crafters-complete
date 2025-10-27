@@ -95,17 +95,37 @@ const projectsByCategory = async (req, res) => {
 
 // Other project and review handlers...
 const projectDetail = async (req, res) => { /* unchanged */ };
-const reviewsList = async (req, res) => { /* unchanged */ };
-const reviewForm = (req, res) => { /* unchanged */ };
-const reviewSubmit = async (req, res) => { /* unchanged */ };
+const reviewsList = async (req, res) => {
+try {
+    const page = parseInt(req.query.page) || 1;
+    const limit = 10;
+    const skip = (page - 1) * limit;
+
+    const reviews = await Review.find({ status: 'approved' })
+      .sort({ createdAt: -1 })
+      .skip(skip)
+      .limit(limit);
+
+    const totalReviews = await Review.countDocuments({ status: 'approved' });
+    const totalPages = Math.ceil(totalReviews / limit);
+
+    res.render('reviews', {
+      reviews,
+      currentPage: page,
+      totalPages
+    });
+  } catch (err) {
+    console.error('Error fetching reviews:', err);
+    res.status(500).send('Error loading reviews');
+  }
+};
 
 module.exports = {
   projectsList,
   projectsByCategory,
-  projectDetail,
-  reviewsList,
-  reviewForm,
-  reviewSubmit
+  projectDetail,  
+  reviewsList
+ 
 };
 
 

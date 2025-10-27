@@ -1,0 +1,62 @@
+extends layout
+
+block content
+  .container.py-5
+    .row.justify-content-center
+      .col-lg-6.col-md-8
+        .card.shadow-lg.border-0
+          .card-header.bg-info.text-white
+            h3.mb-0.text-center Write a Review
+          
+          .card-body.p-4
+            form(action='/reviews/new', method='POST')
+              
+              .mb-3
+                label.form-label Your Name *
+                input.form-control.form-control-lg(type='text' name='name' required)
+
+              .mb-3
+                label.form-label Email
+                input.form-control.form-control-lg(type='email' name='email')
+
+              .mb-3
+                label.form-label.d-block Rating *
+                .d-flex.flex-column.gap-2.mt-3
+                  div
+                    input.btn-check(type='radio' name='rating' id='rate5' value='5' required)
+                    label.btn.btn-outline-warning.w-100(for='rate5') ⭐⭐⭐⭐⭐ Excellent
+                  
+                  div
+                    input.btn-check(type='radio' name='rating' id='rate4' value='4')
+                    label.btn.btn-outline-warning.w-100(for='rate4') ⭐⭐⭐⭐ Good
+                  
+                  div
+                    input.btn-check(type='radio' name='rating' id='rate3' value='3')
+                    label.btn.btn-outline-warning.w-100(for='rate3') ⭐⭐⭐ Average
+                  
+                  div
+                    input.btn-check(type='radio' name='rating' id='rate2' value='2')
+                    label.btn.btn-outline-warning.w-100(for='rate2') ⭐⭐ Poor
+                  
+                  div
+                    input.btn-check(type='radio' name='rating' id='rate1' value='1')
+                    label.btn.btn-outline-warning.w-100(for='rate1') ⭐ Very Poor
+
+              .mb-3
+                label.form-label Project Type
+                select.form-select.form-select-lg(name='projectType')
+                  option(value='') Select type
+                  option(value='Living Room') Living Room
+                  option(value='Bedroom') Bedroom
+                  option(value='Kitchen') Kitchen
+                  option(value='Dining Room') Dining Room
+                  option(value='Office') Office
+                  option(value='Balcony') Balcony
+
+              .mb-3
+                label.form-label Your Review *
+                textarea.form-control.form-control-lg(name='reviewText' rows='5' placeholder='Share your experience...' required)
+
+              .text-center.mt-4
+                button.btn.btn-info.btn-lg.px-5.me-2(type='submit') Submit Review
+                a.btn.btn-secondary.btn-lg.px-4(href='/reviews') Cancel

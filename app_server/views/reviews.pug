@@ -2,73 +2,25 @@ extends layout
 
 block content
   .container.py-5
-    .row.justify-content-center
-      .col-lg-8
-        .card.shadow
-          .card-body.p-5
-            h2.text-center.mb-4 Leave a Review
-            p.text-center.text-muted.mb-4 Share your experience with Space Crafters
-            
-            if error
-              .alert.alert-danger= error
-              
-            form(method='post', action='/reviews/new')
-              .row
-                .col-md-6
-                  .mb-3
-                    label.form-label(for='name') Full Name *
-                    input.form-control(type='text', id='name', name='name', required, value=formData ? formData.name : '')
-                .col-md-6
-                  .mb-3
-                    label.form-label(for='email') Email Address *
-                    input.form-control(type='email', id='email', name='email', required, value=formData ? formData.email : '')
-                    
-              .row
-                .col-md-6
-                  .mb-3
-                    label.form-label(for='phone') Phone Number
-                    input.form-control(type='tel', id='phone', name='phone', value=formData ? formData.phone : '')
-                .col-md-6
-                  .mb-3
-                    label.form-label(for='projectType') Project Type *
-                    select.form-select(id='projectType', name='projectType', required)
-                      option(value='', disabled, selected=!formData || !formData.projectType) Select project type
-                      option(value='Residential Design', selected=formData && formData.projectType === 'Residential Design') Residential Design
-                      option(value='Commercial Design', selected=formData && formData.projectType === 'Commercial Design') Commercial Design
-                      option(value='Consultation Only', selected=formData && formData.projectType === 'Consultation Only') Consultation Only
-                      option(value='Other', selected=formData && formData.projectType === 'Other') Other
-                      
-              .mb-3
-                label.form-label Rating *
-                .rating-input
-                  each star in [5,4,3,2,1]
-                    input.form-check-input.me-1(type='radio', name='rating', id=`rating${star}`, value=star, required, checked=formData && formData.rating == star)
-                    label.form-check-label.me-3(for=`rating${star}`)
-                      each s in Array.from({length: star}, (_, i) => i + 1)
-                        i.bi.bi-star-fill.text-warning
-                      = ' (' + star + ' stars)'
-                      
-              .mb-3
-                label.form-label(for='reviewText') Your Review *
-                textarea.form-control(id='reviewText', name='reviewText', rows='4', required, maxlength='1000')= formData ? formData.reviewText : ''
-                .form-text Maximum 1000 characters
-                
-              .mb-3
-                label.form-label Would you recommend Space Crafters? *
-                .mt-2
-                  .form-check
-                    input.form-check-input(type='radio', name='recommendation', id='recYes', value='Yes', required, checked=formData && formData.recommendation === 'Yes')
-                    label.form-check-label(for='recYes') Yes, definitely
-                  .form-check
-                    input.form-check-input(type='radio', name='recommendation', id='recMaybe', value='Maybe', required, checked=formData && formData.recommendation === 'Maybe')
-                    label.form-check-label(for='recMaybe') Maybe
-                  .form-check
-                    input.form-check-input(type='radio', name='recommendation', id='recNo', value='No', required, checked=formData && formData.recommendation === 'No')
-                    label.form-check-label(for='recNo') No
-                    
-              .d-grid
-                button.btn.btn-primary.btn-lg(type='submit') Submit Review
-                
-            .text-center.mt-3
-              p
-                a(href='/reviews') ← Back to Reviews
+    h1.text-center.mb-5 Customer Reviews
+    
+    if reviews && reviews.length > 0
+      .row
+        each review in reviews
+          .col-md-6.mb-4
+            .card.shadow-sm
+              .card-body
+                h5.card-title= review.name
+                p.text-warning
+                  = '⭐'.repeat(review.rating)
+                p.card-text= review.reviewText
+                if review.projectType
+                  p.small.text-muted Project: #{review.projectType}
+    else
+      .text-center.py-5
+        h3 No reviews yet
+        p Be the first to review!
+        a.btn.btn-primary(href='/reviews/new') Write Review
+    
+    .text-center.mt-4
+      a.btn.btn-primary(href='/reviews/new') Write a Review

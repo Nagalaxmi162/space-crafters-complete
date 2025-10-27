@@ -1,81 +1,78 @@
+const createError = require('http-errors');
 const express = require('express');
 const path = require('path');
-const mongoose = require('mongoose');
+const cookieParser = require('cookie-parser');
+const logger = require('morgan');
 const session = require('express-session');
-const MongoStore = require('connect-mongo');
-const helmet = require('helmet');
-const rateLimit = require('express-rate-limit');
-require('dotenv').config();
-
-// Import database configuration
-require('./app_server/model/db');
-// Import routes
-const routes = require('./app_server/routes/index');
-const users = require('./app_server/routes/users');
-const { error } = require('console');
-
+const mongoose = require('mongoose');
 const app = express();
 
-// Security middleware
-app.use(helmet({
-  contentSecurityPolicy: false // Disable for development
-}));
+// Database connection
+const dbURI = process.env.MONGODB_URI || 'mongodb://localhost:27017/space-crafters-complete';
+require('./app_server/models/locations');
 
-// Rate limiting
-const limiter = rateLimit({
-  windowMs: 15 * 60 * 1000, // 15 minutes
-  max: 100 // limit each IP to 100 requests per windowMs
+mongoose.connect(dbURI, {
+  useNewUrlParser: true,
+  useUnifiedTopology: true
 });
-app.use(limiter);
+
+// Connection events
+mongoose.connection.on('connected', () => {
+  console.log('Mongoose connected to ' + dbURI);
+});
+
+mongoose.connection.on('error', (err) => {
+  console.log('Mongoose connection error: ' + err);
+});
+
+mongoose.connection.on('disconnected', () => {
+  console.log('Mongoose disconnected');
+});
+
+
+
+// Routes
+const indexRouter = require('./app_server/routes/index');
 
 // View engine setup
 app.set('views', path.join(__dirname, 'app_server', 'views'));
 app.set('view engine', 'pug');
 
-// Session configuration
-app.use(session({
-  secret: process.env.SESSION_SECRET || 'space-crafters-secret-key',
-  resave: false,
-  saveUninitialized: false,
-  store: MongoStore.create({
-    mongoUrl: process.env.MONGODB_URI || 'mongodb://localhost:27017/space-crafters'
-  }),
-  cookie: {
-    maxAge: 24 * 60 * 60 * 1000 // 24 hours
-  }
-}));
-
 // Middleware
+app.use(logger('dev'));
 app.use(express.json());
-app.use(express.urlencoded({ extended: false }));
+app.use(express.urlencoded({ extended: true })); // Important for form submissions
+app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
-// Make user available in all templates
+app.use(session({
+  secret: 'space-crafters-secret-key-2025',
+  resave: false,
+  saveUninitialized: false,
+  cookie: { maxAge: 24 * 60 * 60 * 1000 } // 24 hours
+}));
+// Make user available in all views
 app.use((req, res, next) => {
-  res.locals.user = req.session.user;
+  res.locals.user = req.session.user || null;
   next();
-});
-
+})
 // Routes
-app.use('/', routes);
-app.use('/users', users);
+app.use('/', indexRouter);
 
-// catch 404 and forward to error handler
+// Catch 404 and forward to error handler
 app.use(function(req, res, next) {
-  const err = new Error('Not Found');
-  err.status = 404;
-  next(err);
+  next(createError(404));
 });
 
-// error handler
+// Error handler
 app.use(function(err, req, res, next) {
+  // Set locals, only providing error in development
   res.locals.message = err.message;
   res.locals.error = req.app.get('env') === 'development' ? err : {};
+
+  // Render the error page
   res.status(err.status || 500);
-  res.render('error',{
-    message: err.message,
-    error: err
-  });
+  res.render('error');
 });
 
 module.exports = app;

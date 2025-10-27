@@ -19,29 +19,29 @@ mongoose.connection.on('disconnected', () => {
   console.log('Mongoose disconnected');
 });
 
-const gracefulShutdown = (msg, callback) => {
-  mongoose.connection.close(() => {
+// --- FIXED Shutdown block for Mongoose v7+ ---
+const gracefulShutdown = async (msg) => {
+  try {
+    await mongoose.connection.close();
     console.log('Mongoose disconnected through ' + msg);
-    callback();
-  });
+  } catch (err) {
+    console.error('Error during shutdown:', err);
+  }
 };
 
-process.once('SIGUSR2', () => {
-  gracefulShutdown('nodemon restart', () => {
-    process.kill(process.pid, 'SIGUSR2');
-  });
+process.once('SIGUSR2', async () => {
+  await gracefulShutdown('nodemon restart');
+  process.kill(process.pid, 'SIGUSR2');
 });
 
-process.on('SIGINT', () => {
-  gracefulShutdown('app termination', () => {
-    process.exit(0);
-  });
+process.on('SIGINT', async () => {
+  await gracefulShutdown('app termination');
+  process.exit(0);
 });
 
-process.on('SIGTERM', () => {
-  gracefulShutdown('Heroku app shutdown', () => {
-    process.exit(0);
-  });
+process.on('SIGTERM', async () => {
+  await gracefulShutdown('Heroku app shutdown');
+  process.exit(0);
 });
 
 require('./locations');

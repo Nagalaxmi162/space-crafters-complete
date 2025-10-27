@@ -1,27 +1,21 @@
 doctype html
 html(lang='en')
   head
-    meta(charset='utf-8')
-    meta(name='viewport', content='width=device-width, initial-scale=1')
-    title= title
-    meta(name='description', content='Space Crafters - Premium Interior Design Solutions')
-    
-    // Bootstrap CSS
-    link(href='/bootstrap-5.3.1-dist/css/bootstrap.min.css', rel='stylesheet')
-    // Custom CSS
-    link(href='/stylesheets/style.css', rel='stylesheet')
-    
+    meta(charset='UTF-8')
+    meta(name='viewport', content='width=device-width, initial-scale=1.0')
+    title= title || 'Space Crafters'
+    link(rel='stylesheet', href='/bootstrap-5.3.1-dist/css/bootstrap.min.css')
+    link(rel='stylesheet', href='https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css')
+    link(rel='stylesheet', href='/stylesheets/style.css')
+  
   body
     // Navigation
-    nav.navbar.navbar-expand-lg.navbar-dark.bg-primary.fixed-top
-      .container
-        a.navbar-brand(href='/') 
-          strong Space Crafters
-        
+    nav.navbar.navbar-expand-lg.navbar-dark.bg-info
+      .container-fluid
+        a.navbar-brand(href='/') Space Crafters
         button.navbar-toggler(type='button', data-bs-toggle='collapse', data-bs-target='#navbarNav')
           span.navbar-toggler-icon
-          
-        .collapse.navbar-collapse#navbarNav
+        #navbarNav.collapse.navbar-collapse
           ul.navbar-nav.ms-auto
             li.nav-item
               a.nav-link(href='/') Home
@@ -33,74 +27,54 @@ html(lang='en')
               a.nav-link(href='/about') About
             li.nav-item
               a.nav-link(href='/contact') Contact
-              
+            li.nav-item
+              a.nav-link(href='/maintenance-tips') Tips
             if user
-              li.nav-item.dropdown
-                a.nav-link.dropdown-toggle(href='#', data-bs-toggle='dropdown') #{user.firstName}
-                ul.dropdown-menu
-                  li: a.dropdown-item(href='/users/profile') My Profile
-                  li: hr.dropdown-divider
-                  li: a.dropdown-item(href='/logout') Logout
+              li.nav-item
+                span.nav-link.text-white Welcome, #{user.username}!
+              li.nav-item
+                a.nav-link.btn.btn-outline-light(href='/logout') Logout
             else
               li.nav-item
-                a.nav-link(href='/login') Login
-              li.nav-item
-                a.nav-link(href='/register') Register
-    
-    // Main layout with container and sidebar
-    main(style='margin-top: 86px;')
-      .container
-        .row
-          .col-lg-8.col-md-7
-            block content
+                a.nav-link.btn.btn-outline-light.me-2(href='/login') Login
+              
 
-          .col-lg-4.col-md-5
-            // Sidebar
-            .card.mb-3
-              .card-body
-                h5.card-title Space Crafters
-                p.card-text Premium interior design solutions for modern living spaces.
-            .card.mb-3
-              .card-body
-                h5.card-title Quick Links
-                ul.list-unstyled
-                  li: a.text-primary(href='/projects') Projects
-                  li: a.text-primary(href='/reviews') Reviews
-                  li: a.text-primary(href='/about') About Us
-                  li: a.text-primary(href='/contact') Contact
-            .card
-              .card-body
-                h5.card-title Contact Info
-                p.text-secondary
-                  | Email: info@spacecrafters.com
-                  br
-                  | Phone: +1 (555) 123-4567
-    
+
+    // Main Content
+    block content
+
     // Footer
-    footer.bg-dark.text-white.py-5.mt-5
+    footer.bg-dark.text-white.py-4.mt-5
       .container
         .row
-          .col-md-4
+          .col-md-4.mb-3
             h5 Space Crafters
             p Premium interior design solutions for modern living spaces.
-          .col-md-4
+          
+          .col-md-4.mb-3
             h5 Quick Links
             ul.list-unstyled
-              li: a.text-white-50(href='/projects') Projects
-              li: a.text-white-50(href='/reviews') Reviews
-              li: a.text-white-50(href='/about') About Us
-              li: a.text-white-50(href='/contact') Contact
-          .col-md-4
+              li
+                a.text-white.text-decoration-none(href='/projects') Projects
+              li
+                a.text-white.text-decoration-none(href='/reviews') Reviews
+              li
+                a.text-white.text-decoration-none(href='/about') About Us
+              li
+                a.text-white.text-decoration-none(href='/contact') Contact
+          
+          .col-md-4.mb-3
             h5 Contact Info
-            p.text-white-50
-              | Email: info@spacecrafters.com
-              br
-              | Phone: +1 (555) 123-4567
-        hr.my-4
+            p.mb-2
+              i.bi.bi-envelope.me-2
+              | info@spacecrafters.com
+            p.mb-0
+              i.bi.bi-phone.me-2
+              | +1 (555) 123-4567
+
+        hr.bg-white.my-3
         .text-center
-          p &copy; 2025 Space Crafters. All rights reserved.
-    
-    // Bootstrap JS
-    script(src='/bootstrap-5.3.1-dist/js/bootstrap.bundle.min.js')
-    // Custom JS
-    script(src='/javascripts/main.js')
+          p.mb-0 &copy; 2025 Space Crafters. All rights reserved.
+
+script(src='/bootstrap-5.3.1-dist/js/bootstrap.bundle.min.js')
+script(src='/javascripts/main.js')

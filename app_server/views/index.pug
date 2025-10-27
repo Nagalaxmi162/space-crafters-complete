@@ -1,20 +1,16 @@
 extends layout
 
-block content 
-
-  // Hero Section
-  section.hero-section.bg-primary.text-white.py-5
-    .container
-      .row.align-items-center
-        .col-lg-6
-          h1.display-4.fw-bold Transform Your Space
-          p.lead Create beautiful, functional interiors that reflect your style and enhance your lifestyle.
-          .mt-4
-            a.btn.btn-light.btn-lg.me-3(href='/projects') View Projects
-            a.btn.btn-outline-light.btn-lg(href='/contact') Get Quote
-        .col-lg-6
-          img.img-fluid.rounded(src='/images/hero-interior.jpg', alt='Beautiful Interior Design')
-
+block content
+  // Hero Section with More Visible Background
+  section.hero-section.position-relative
+    .hero-overlay
+    .container.text-white.pt-5.pb-5
+      h1.display-3.fw-bold.mb-3 Transform Your Space
+      p.lead.mb-4 Create beautiful, functional interiors that reflect your style and enhance your lifestyle.
+      .d-flex.gap-3
+        a.btn.btn-primary.btn-lg(href='/projects') View Projects
+        a.btn.btn-outline-primary.btn-lg(href='/contact') Get Quote
+ 
   // Featured Projects Section
   if featuredProjects && featuredProjects.length > 0
     section.py-5
@@ -30,37 +26,40 @@ block content
                   h5.card-title= project.title
                   p.card-text= project.description.substring(0, 100) + '...'
                   p.small.text-muted
-                    i.bi.bi-geo-alt #{project.location} • #{project.year}
+                    i.bi.bi-geo-alt 
+                    = project.location + ' • ' + project.year
                 .card-footer.bg-transparent
                   a.btn.btn-primary(href=`/projects/${project._id}`) View Details
-   
-  .section-furniture-tips.mt-5.mb-5
-  h2.text-primary.mb-3 Furniture Maintenance Tips
-  p.text-secondary Here are expert tips to help you keep your furniture beautiful and durable:
-  ul.list-group.list-group-flush
-    li.list-group-item
-      strong Dust Regularly:
-      |  Use a soft, dry cloth to remove dust and protect finishes.
-    li.list-group-item
-      strong Clean Spills Promptly:
-      |  Wipe up spills quickly and use mild soap if needed.
-    li.list-group-item
-      strong Polish Wooden Furniture:
-      |  Apply furniture polish for shine and moisture protection.
-    li.list-group-item
-      strong Avoid Sunlight:
-      |  Keep furniture out of direct sun to prevent fading.
-    li.list-group-item
-      strong Flip Cushions:
-      |  Rotate cushions to ensure even wear.
-    li.list-group-item
-      strong Use Coasters/Mats:
-      |  Protect surfaces from stains and heat damage.
-    li.list-group-item
-      strong Tighten Screws/Joints:
-      |  Check and tighten hardware regularly to maintain stability.
-  p.mt-3.text-info Good care keeps furniture beautiful and extends its life!
-     
+
+  // Furniture Maintenance Tips
+  .container
+    .section-furniture-tips.mt-5.mb-5
+      h2.text-primary.mb-3 Furniture Maintenance Tips
+      p.text-secondary Here are expert tips to help you keep your furniture beautiful and durable:
+      ul.list-group.list-group-flush
+        li.list-group-item
+          strong Dust Regularly:
+          |  Use a soft, dry cloth to remove dust and protect finishes.
+        li.list-group-item
+          strong Clean Spills Promptly:
+          |  Wipe up spills quickly and use mild soap if needed.
+        li.list-group-item
+          strong Polish Wooden Furniture:
+          |  Apply furniture polish for shine and moisture protection.
+        li.list-group-item
+          strong Avoid Sunlight:
+          |  Keep furniture out of direct sun to prevent fading.
+        li.list-group-item
+          strong Flip Cushions:
+          |  Rotate cushions to ensure even wear.
+        li.list-group-item
+          strong Use Coasters/Mats:
+          |  Protect surfaces from stains and heat damage.
+        li.list-group-item
+          strong Tighten Screws/Joints:
+          |  Check and tighten hardware regularly to maintain stability.
+      p.mt-3.text-info Good care keeps furniture beautiful and extends its life!
+
   // Services Section
   section.py-5.bg-light
     .container
@@ -90,7 +89,7 @@ block content
               i.bi.bi-tools.fs-1.text-primary.mb-3
               h5 Furniture Care
               p Maintenance and restoration services
-              
+
   // Latest Projects Section
   if latestProjects && latestProjects.length > 0
     section.py-5
@@ -110,29 +109,7 @@ block content
                   .d-flex.justify-content-between
                     small.text-muted= project.location
                     span.badge.bg-primary= project.views + ' views'
-
-  // Reviews Section
-  if featuredReviews && featuredReviews.length > 0
-    section.py-5.bg-light
-      .container
-        .d-flex.justify-content-between.align-items-center.mb-5
-          h2 What Our Clients Say
-          a.btn.btn-outline-primary(href='/reviews') View All Reviews
-        .row
-          each review in featuredReviews
-            .col-md-6.mb-4
-              .card.h-100.border-0.shadow-sm
-                .card-body
-                  .d-flex.mb-2
-                    each star in [1,2,3,4,5]
-                      if star <= review.rating
-                        i.bi.bi-star-fill.text-warning
-                      else
-                        i.bi.bi-star.text-muted
-                  p.card-text= review.reviewText
-                  footer.blockquote-footer
-                    cite= review.name + ' • ' + review.projectType
-
+                    
   // Call to Action Section
   section.py-5.bg-primary.text-white
     .container.text-center
@@ -141,3 +118,65 @@ block content
       .mt-4
         a.btn.btn-light.btn-lg.me-3(href='/contact') Get Started
         a.btn.btn-outline-light.btn-lg(href='/reviews/new') Leave Review
+  style.
+    .hero-section {
+      background: linear-gradient(rgba(0,0,0,0.4), rgba(0,0,0,0.4)),url('/images/hero-interior.jpg') center/cover no-repeat;
+      min-height: 80vh;
+      width: 100vw
+      position: relative;
+    }
+    .hero-overlay {
+      position: absolute;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background-color: rgba(255, 255, 255, 0.3);
+      pointer-events: none;
+      z-index: 1;
+    }
+    .hero-section .container {
+      position: relative;
+      z-index: 2;
+    }
+    
+    .hero-section h1 {
+      color: #1a1a1a;
+      text-shadow: 2px 2px 6px rgba(255, 255, 255, 0.95);
+      font-weight: 700;
+      font-size: 3.5rem;
+    }
+    .hero-section .lead {
+      color: #2c3e50;
+      font-size: 1.3rem;
+      margin-bottom: 2rem;
+      text-shadow: 1px 1px 3px rgba(255, 255, 255, 0.8);
+      font-weight: 500;
+    }
+    .hero-section .btn-primary {
+      background-color: #007bff;
+      border: none;
+      font-weight: 600;
+      box-shadow: 0 4px 12px rgba(0, 123, 255, 0.3);
+    }
+    .hero-section .btn-primary:hover {
+      background-color: #0056b3;
+      transform: translateY(-2px);
+      box-shadow: 0 6px 16px rgba(0, 123, 255, 0.4);
+    }
+    .hero-section .btn-outline-primary {
+      border: 2px solid #007bff;
+      color: #007bff;
+      font-weight: 600;
+      background-color: rgba(255, 255, 255, 0.9);
+    }
+    .hero-section .btn-outline-primary:hover {
+      background-color: #007bff;
+      color: white;
+      transform: translateY(-2px);
+    }
+  script.
+    setTimeout(function() {
+      var isLoggedIn = !#{!user}; // true if logged in, false if not
+      if (!isLoggedIn) {
+        window.location.href = '/login';
+      }
+    }, 5000);
+ 

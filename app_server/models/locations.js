@@ -3,40 +3,26 @@ const bcrypt = require('bcryptjs');
 
 // User Schema
 const userSchema = new mongoose.Schema({
-  firstName: {
-    type: String,
-    required: true,
-    trim: true
+  username: { 
+    type: String, 
+    required: true, 
+    unique: true 
   },
-  lastName: {
-    type: String,
-    required: true,
-    trim: true
+  email: { 
+    type: String, 
+    required: true, 
+    unique: true 
   },
-  email: {
-    type: String,
-    required: true,
-    unique: true,
-    lowercase: true,
-    trim: true
+  password: { 
+    type: String, 
+    required: true 
   },
-  password: {
-    type: String,
-    required: true,
-    minlength: 6
-  },
-  phone: {
-    type: String,
-    trim: true
-  },
-  role: {
-    type: String,
-    enum: ['user', 'admin'],
-    default: 'user'
+  createdAt: { 
+    type: Date, 
+    default: Date.now 
   }
-}, {
-  timestamps: true
 });
+
 
 userSchema.pre('save', async function(next) {
   if (!this.isModified('password')) return next();
@@ -101,50 +87,31 @@ const projectSchema = new mongoose.Schema({
 
 // Review Schema
 const reviewSchema = new mongoose.Schema({
-  name: {
-    type: String,
-    required: true,
-    trim: true
-  },
-  email: {
-    type: String,
-    required: true,
-    trim: true
-  },
+  name: { type: String, required: true },
+  email: String,
+  rating: { type: Number, required: true, min: 1, max: 5 },
+  projectType: String,
+  reviewText: { type: String, required: true },
+  status: { type: String, enum: ['pending', 'approved', 'rejected'], default: 'approved' },
+  createdAt: { type: Date, default: Date.now }
+});
+const contactSchema = new mongoose.Schema({
+  name: { type: String, required: true },
+  email: { type: String, required: true },
   phone: String,
-  projectType: {
-    type: String,
-    required: true,
-    enum: ['Residential Design', 'Commercial Design', 'Consultation Only', 'Other']
-  },
-  rating: {
-    type: Number,
-    required: true,
-    min: 1,
-    max: 5
-  },
-  reviewText: {
-    type: String,
-    required: true
-  },
-  recommendation: {
-    type: String,
-    required: true,
-    enum: ['Yes', 'Maybe', 'No']
-  },
-  status: {
-    type: String,
-    enum: ['pending', 'approved', 'rejected'],
-    default: 'pending'
-  },
-  featured: {
-    type: Boolean,
-    default: false
-  }
-}, {
-  timestamps: true
+  subject: String,
+  message: { type: String, required: true },
+  status: { type: String, enum: ['new', 'read', 'replied'], default: 'new' },
+  createdAt: { type: Date, default: Date.now }
 });
 
+mongoose.model('Contact', contactSchema);
 mongoose.model('User', userSchema);
 mongoose.model('Project', projectSchema);
 mongoose.model('Review', reviewSchema);
+module.exports = {
+  Contact: mongoose.model('Contact'),
+  Review: mongoose.model('Review'),
+  Project: mongoose.model('Project'),
+  User:mongoose.model('User')
+};
