@@ -12,11 +12,16 @@ const userSchema = new mongoose.Schema({
     type: String, 
     required: true 
   },
+  username: {
+    type: String,
+    sparse: true  // Allow null values but enforce unique when present
+  },
   createdAt: { 
     type: Date, 
     default: Date.now 
   }
 });
+
  // Project Schema
 const projectSchema = new mongoose.Schema({
   title: {

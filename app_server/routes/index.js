@@ -8,7 +8,10 @@ const bcrypt = require('bcryptjs');
 const mongoose = require('mongoose');
 const User = mongoose.model('User');
 
-
+// Registration routes (NEW)
+router.get('/register', (req, res) => {
+  res.render('register', { title: 'Register' });
+});
 // Main routes
 router.get('/', mainController.homePage);
 router.get('/about', mainController.aboutPage);
@@ -35,46 +38,65 @@ router.get('/login', authController.loginGet);
 router.post('/login', authController.loginPost);
 router.get('/logout', authController.logout);
 
-// Registration routes (NEW)
-router.get('/register', (req, res) => {
-  res.render('register', { title: 'Register' });
-});
+
 
 router.post('/register', async (req, res) => {
-  const { email, password } = req.body;
-  
   try {
-    // Check if user already exists
-    const existingUser = await User.findOne({ email });
-    if (existingUser) {
+    console.log('=== REGISTRATION ATTEMPT ===');
+    console.log('Form data received:', req.body);
+
+    const { email, password } = req.body;
+
+    if (!email || !password) {
+      console.log('ERROR: Missing email or password');
       return res.render('register', { 
         title: 'Register',
-        error: 'Email already registered' 
+        error: 'All fields are required',
+        success: null
       });
     }
 
-    // Hash the password
-    const hashedPassword = await bcrypt.hash(password, 10);
+    // Check if user exists
+    const existingUser = await User.findOne({ email: email.trim().toLowerCase() });
+    console.log('Existing user check:', existingUser ? 'FOUND' : 'NOT FOUND');
+    
+    if (existingUser) {
+      return res.render('register', { 
+        title: 'Register',
+        error: 'Email already registered',
+        success: null
+      });
+    }
 
-    // Create new user
+    // Hash password
+    const hashedPassword = await bcrypt.hash(password, 10);
+    console.log('Password hashed successfully ✅');
+
+    // Create user
     const newUser = new User({
-      email,
+      email: email.trim().toLowerCase(),
       password: hashedPassword
     });
 
-    await newUser.save();
+    console.log('User object created:', newUser);
+
+    // Save user
+    const savedUser = await newUser.save();
+    console.log('✅ USER SAVED TO DATABASE:', savedUser);
+
     res.render('register', { 
       title: 'Register',
+      error: null,
       success: 'Registration successful! You can now login.' 
     });
   } catch (error) {
-    console.error('Registration error:', error);
+    console.error('❌ REGISTRATION ERROR:', error);
     res.render('register', { 
       title: 'Register',
-      error: 'Registration failed. Please try again.' 
+      error: 'Registration failed: ' + error.message,
+      success: null
     });
   }
 });
-
-
+ 
 module.exports = router;
